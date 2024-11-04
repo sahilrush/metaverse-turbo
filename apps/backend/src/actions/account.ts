@@ -1,80 +1,71 @@
 
-import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { Request, Response } from 'express';
-const prisma = new PrismaClient();
-const JWT_SECRET = process.env.JWT_SECRET || 'secret';
 import jwt from 'jsonwebtoken'; 
-
-
+import prisma from "@repo/db/client";
+import { SigninSchema, SignupSchema } from '../types';
+import { JWT_SECRET } from '../config';
 
 export const signup = async (req: Request, res: Response): Promise<any> => {
     console.log("Request body:", req.body); 
-    const { username, password, role } = req.body;
-    console.log(role);
-
-    // Validate role
-    if (role !== "Admin" && role !== "User") {
-        return res.status(400).json({ error: "Role must be either Admin or User" });
+    const parsedData = SignupSchema.safeParse(req.body);
+    if(!parsedData.success){
+         res.status(400).json({error: "Invalid data"})
+        return
     }
 
     try {
-        // Check if the user already exists3
-        const existingUser = await prisma.user.findUnique({
-            where: {
-                username: username,
-            },
-        });
-
-        if (existingUser) {
-            return res.status(400).json({ error: "Username already exists" });
-        }
-
-        // Hash the password
-        const passwordHash = await bcrypt.hash(password, 10);
-
-        // Create a new user
+        const hashedPassword = await bcrypt.hash(parsedData.data.password, 10); 
         const user = await prisma.user.create({
             data: {
-                username: username,
-                password: passwordHash,
-                role: role,
+                username: parsedData.data.username,
+                password:hashedPassword,
+                role:parsedData.data.type === "admin" ? "Admin" : "User"
             },
         });
 
-        return res.status(201).json({ message: "User created successfully" });
-    } catch (err: any) {
-        console.error("Error in /signup:", err);
-        return res.status(500).json({ error: "Internal server error" });
+        return res.status(201).json({ message: "User created successfully", userId: user.id });
+    } catch (e) {
+        return res.status(400).json({ error: "User already exists" });
     }
 };
 
 
 
 export const signin = async(req: Request, res: Response):Promise<any> => {  
-        const {username ,password} = req.body;
-        try {
+
+
+        const parsedData = SigninSchema.safeParse(req.body);
+
+    if(!parsedData.success){
+        return res.status(400).json({error: "Invalid data"})    
+    }
+
+
+    try {
             const user = await prisma.user.findUnique({
                 where: {
-                    username: username
+                    username: parsedData.data.username
                 }
             })
-            if(!user) {
-                return res.status(400).json({error: "Invalid credtionals"})
+
+            if(!user){
+                return res.status(400).json({error: "user not found"})
             }
-
-
-            const isPasswordValid = await bcrypt.compare(password, user.password);
+ 
+            const isPasswordValid = await bcrypt.compare(parsedData.data.password, user.password);
             if(!isPasswordValid){
                 return res.status(400).json({error: "Invalid credtionals"})
             }
 
-            const token = jwt.sign({ username: user.username}, JWT_SECRET, {expiresIn: "1h"})
+            const token = jwt.sign({
+                userId: user.id,
+                role:user.id
+            }, JWT_SECRET)
 
-            return res.status(500).json({token})
+            return res.json({token})
 
         }catch(err){
-             console.error("Error in /sign:",err)
              return res.status(500).json({err:"Internal server error"})
         }
 
