@@ -24,8 +24,9 @@ export const CreateSpaceSchema = z.object({
 })
 
 export const DeleteElementSchema = z.object({
-id: z.string()
+id: z.string(),
 })
+
 
 export const AddElementSchema = z.object({
     spaceId: z.string(),

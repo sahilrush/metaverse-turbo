@@ -1,6 +1,6 @@
 import { UpdateMetadataSchema } from "../types"
 import { Request, Response } from "express" 
-import  prisma from "@repo/db/client"   
+import client from "@repo/db/client"
 
 
 export const metaData = async(req:Request, res:Response) => {  
@@ -9,7 +9,7 @@ export const metaData = async(req:Request, res:Response) => {
      res.status(400).json({error: "Invalid data"})    
     return    
     }
-    await prisma.user.update({
+    await client.user.update({
         where :{
             id: req.userId
         },
@@ -18,5 +18,28 @@ export const metaData = async(req:Request, res:Response) => {
         }
     })
     res.json({message: "Metadata updated successfully"})    
+}
+
+
+export const bulkMetaData = async(req:Request, res:Response) => {   
+    const userIdString = (req.query.ids ?? "[]") as string;
+    const userIds = (userIdString).slice(1, userIdString?.length - 2).split(",");
+
+    const metadata = await client.user.findMany({
+        where: {
+            id: {
+                in: userIds
+            }
+        }, select: {
+            avatar: true,
+            id:true
+        }
+    })
+    res.json({
+        avatars: metadata.map(m => ({
+            userId: m.id,
+            avatarId: m.avatar?.imageUrl    
+        }))
+    })
 }
 

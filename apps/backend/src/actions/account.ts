@@ -2,7 +2,7 @@
 import bcrypt from 'bcryptjs';
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken'; 
-import prisma from "@repo/db/client";
+import client from "@repo/db/client";
 import { SigninSchema, SignupSchema } from '../types';
 import { JWT_SECRET } from '../config';
 
@@ -16,7 +16,7 @@ export const signup = async (req: Request, res: Response): Promise<any> => {
 
     try {
         const hashedPassword = await bcrypt.hash(parsedData.data.password, 10); 
-        const user = await prisma.user.create({
+        const user = await client.user.create({
             data: {
                 username: parsedData.data.username,
                 password:hashedPassword,
@@ -43,7 +43,7 @@ export const signin = async(req: Request, res: Response):Promise<any> => {
 
 
     try {
-            const user = await prisma.user.findUnique({
+            const user = await client.user.findUnique({
                 where: {
                     username: parsedData.data.username
                 }

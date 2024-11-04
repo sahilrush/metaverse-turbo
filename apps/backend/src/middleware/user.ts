@@ -4,7 +4,7 @@ import { JWT_SECRET } from "../config";
 import jwt from "jsonwebtoken";
 
 
-export const adminMiddleware = (req: Request, res: Response, next: NextFunction) => { 
+export const userMiddleware = (req: Request, res: Response, next: NextFunction) => { 
         
   const header = req.headers["authorization"];
   const token = header?.split(" ")[1];
