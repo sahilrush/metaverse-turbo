@@ -48,7 +48,7 @@ export const signin = async(req: Request, res: Response):Promise<any> => {
                     username: parsedData.data.username
                 }
             })
-
+  
             if(!user){
                 return res.status(400).json({error: "user not found"})
             }
