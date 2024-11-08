@@ -3,7 +3,7 @@ import { RoomManager } from "./RoomManager";
 import { OutgoingMessage } from "./types";
 import client from "@repo/db/client";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { JWT_PASSWORD } from "./config";
+
 
 function getRandomString(length: number): string {
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -37,7 +37,7 @@ export class User {
         case "join":
           const spaceId = parsedData.payload.spaceId;
           const token = parsedData.payload.token;
-          const userId = (jwt.verify(token, JWT_PASSWORD) as JwtPayload).userId;
+          const userId = (jwt.verify(token, process.env.JWT_PASSWORD || "21231233") as JwtPayload).userId;
           if (!userId) {
             this.ws.close();
             return;
