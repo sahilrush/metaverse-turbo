@@ -5,7 +5,7 @@ export const avatars = async (req: Request, res: Response) => {
     try {
       const avatars = await client.avatar.findMany();
       res.json({
-        avatars: avatars.map(a => ({
+        avatars: avatars.map((a:any) => ({
           id: a.id,
           name: a.name,
           imageUrl: a.imageUrl,
@@ -22,7 +22,7 @@ export const avatars = async (req: Request, res: Response) => {
     try {
       const elements = await client.element.findMany();
       res.json({
-        elements: elements.map(e => ({
+        elements: elements.map((e:any) => ({
           id: e.id,
           imageUrl: e.imageUrl,
           width: e.width,

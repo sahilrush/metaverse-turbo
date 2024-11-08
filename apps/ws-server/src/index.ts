@@ -13,5 +13,5 @@ wss.on('connection', function connection(ws) {
     console.log('connection closed');
   });
 
-  ws.send('something');
+  ws.send('something'); 
 });

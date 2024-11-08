@@ -1,6 +1,6 @@
 import { AddElementSchema, CreateElementSchema, CreateSpaceSchema, DeleteElementSchema } from "../types"    
 import client from "@repo/db/client"    
-import { Request, Response } from "express"
+import e, { Request, Response } from "express"
 
 
 
@@ -54,7 +54,7 @@ export const createSpace = async(req: Request, res: Response) => {
         });
 
         await client.spaceElements.createMany({
-            data: map.mapElements.map(e => ({
+            data: map.mapElements.map((e:any) => ({
                 spaceId: space.id,
                 elementId: e.elementId,
                 x: e.x!,
@@ -106,7 +106,7 @@ export const getAllSpaces = async(req: Request, res: Response) => {
         }
     })
     res.json({
-        spaces: spaces.map(s => ({
+        spaces: spaces.map((s:any) => ({
             id: s.id,
             name: s.name,
             thumbnail: s.thumbnail,

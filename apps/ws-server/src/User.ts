@@ -63,7 +63,7 @@ export class User {
                 x: this.x,
                 y: this.y,
               },
-              users: RoomManager.getInstance().rooms.get(spaceId)?.filter((x) => x.id !== this.id)?.map((u) => ({ id: u.id })) ?? [],
+                users: RoomManager.getInstance().rooms.get(spaceId)?.filter((x) => x.id !== this.id)?.map((u) => ({ id: u.id })) ?? [],
             },
           });
           RoomManager.getInstance().broadcast(
@@ -119,14 +119,13 @@ export class User {
         payload: {
           userId: this.userId,
         },
-      },
+      }, 
       this,
       this.spaceId!
     );
     RoomManager.getInstance().removeUser(this, this.spaceId!);
   }
-
-  send(payload: OutgoingMessage): void {
-    this.ws.send(JSON.stringify(payload));
-  }
+send(payload: OutgoingMessage): void {
+ this.ws.send(JSON.stringify(payload));
+}
 }
