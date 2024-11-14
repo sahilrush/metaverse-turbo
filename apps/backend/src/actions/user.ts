@@ -3,7 +3,7 @@ import { Request, Response } from "express"
 import client from "@repo/db/client"
 
 
-export const metaData = async(req:Request, res:Response) => {  
+export const UpdateMetadata = async(req:Request, res:Response) => {  
     const parsedData = UpdateMetadataSchema.safeParse(req.body)
     if(!parsedData.success){
      res.status(400).json({error: "Invalid data"})    
@@ -21,7 +21,7 @@ export const metaData = async(req:Request, res:Response) => {
 }
 
 
-export const bulkMetaData = async(req:Request, res:Response) => {   
+export const getbulkMetaData = async(req:Request, res:Response) => {   
     const userIdString = (req.query.ids ?? "[]") as string;
     const userIds = (userIdString).slice(1, userIdString?.length - 2).split(",");
 

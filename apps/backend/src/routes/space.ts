@@ -1,10 +1,15 @@
-import express from "express";  
-import { addElement, createSpace, deleteElement, getAllSpaces, getSpaceElements } from "../actions/space";
+import express from "express"
 import { userMiddleware } from "../middleware/user";
+import {  addElementtoSpace, createSpace, deleteElement, deleteSpace, getAllSpaces,  getSpaceElementsbyId } from "../actions/space";
 
-export const spaceRouter = express.Router();
-spaceRouter.post('/',userMiddleware, createSpace);
-spaceRouter.delete("/element", userMiddleware, deleteElement);
-spaceRouter.get("/all", userMiddleware, getAllSpaces);
-spaceRouter.post("/element", userMiddleware, addElement);
-spaceRouter.get("/:spaceId", userMiddleware, getSpaceElements);
+
+const spaceRouter = express.Router();
+
+spaceRouter.post("/", userMiddleware, createSpace)
+spaceRouter.delete("/element", userMiddleware, deleteElement)
+spaceRouter.delete("/:spaceId", userMiddleware, deleteSpace)
+spaceRouter.get("/all", userMiddleware, getAllSpaces)
+spaceRouter.post("/:spaceId", userMiddleware, getSpaceElementsbyId)
+spaceRouter.post("/element", userMiddleware, addElementtoSpace)
+
+export default spaceRouter

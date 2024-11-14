@@ -116,7 +116,7 @@ export const getAllSpaces = async(req: Request, res: Response) => {
 }
 
 
-export const addElement = async(req: Request, res: Response) => {
+export const addElementtoSpace = async(req: Request, res: Response) => {
     const parsedData = AddElementSchema.safeParse(req.body)
     if(!parsedData.success){
         res.status(400).json({message: "Validation failed"})
@@ -152,38 +152,10 @@ export const addElement = async(req: Request, res: Response) => {
 
 
 
-export const deleteElement = async(req: Request, res: Response) => {   
-    const parsedData = DeleteElementSchema.safeParse(req.body)
-    if(!parsedData.success){
-        res.status(400).json({message: "Validation failed"})
-        return
-    }
-
-    const spaceElement = await client.spaceElements.findFirst({
-    where: {
-        id: parsedData.data.id
-    },
-    include:{
-        space: true,
-    }
-    })
-
-    if(!spaceElement?.space.creatorId || spaceElement?.space.creatorId !== req.userId){
-        res.status(401).json({message: "Unauthorized"})
-        return
-    }
-   
-    await client.spaceElements.delete({
-        where: {
-            id: parsedData.data.id
-        }
-    })
-    res.status(200).json({message: "Element deleted successfully"})
-}
 
 
 
-export const getSpaceElements = async (req: Request, res: Response) => {
+export const getSpaceElementsbyId = async (req: Request, res: Response) => {
     const space = await client.space.findUnique({
         where: {
             id: req.params.spaceId
@@ -218,3 +190,33 @@ export const getSpaceElements = async (req: Request, res: Response) => {
         })),
     })
     }
+
+    export const deleteElement = async(req: Request, res: Response) => {   
+        const parsedData = DeleteElementSchema.safeParse(req.body)
+        if(!parsedData.success){
+            res.status(400).json({message: "Validation failed"})
+            return
+        }
+    
+        const spaceElement = await client.spaceElements.findFirst({
+        where: {
+            id: parsedData.data.id
+        },
+        include:{
+            space: true,
+        }
+        })
+    
+        if(!spaceElement?.space.creatorId || spaceElement?.space.creatorId !== req.userId){
+            res.status(401).json({message: "Unauthorized"})
+            return
+        }
+       
+        await client.spaceElements.delete({
+            where: {
+                id: parsedData.data.id
+            }
+        })
+        res.status(200).json({message: "Element deleted successfully"})
+    }
+    

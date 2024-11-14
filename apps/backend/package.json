@@ -11,10 +11,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@repo/db": "*",
     "@types/bcryptjs": "^2.4.6",
     "@types/estree": "^1.0.6",
-    "@types/express": "^5.0.0",
-    "@repo/db": "*"
+    "@types/express": "^5.0.0"
   },
   "dependencies": {
     "@repo/db": "*",
