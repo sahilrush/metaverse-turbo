@@ -1,35 +1,24 @@
 {
-  "name": "backend",
+  "name": "http",
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsc-watch --onSuccess \"npm run start\" ",
     "build": "npx esbuild src/index.ts --bundle --outfile=dist/index.js --platform=node --tsconfig=tsconfig.json",
-    "start": "npm run build && node dist/index.js"
+    "start": "node dist/index.js",
+    "dev": "npm run build && npm run start"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "@repo/db": "*",
-    "@types/bcryptjs": "^2.4.6",
-    "@types/estree": "^1.0.6",
-    "@types/express": "^5.0.0",
-    "tsc-watch": "^6.2.1"
-  },
+  "description": "",
   "dependencies": {
-    "@repo/db": "*",
-    "@types/bcrypt": "^5.0.2",
+    "@repo/db": "workspace:*",
+    "@types/express": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.7",
-    "bcrypt": "^5.1.1",
-    "bcryptjs": "^2.4.3",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
+    "esbuild": "^0.24.0",
     "express": "^4.21.1",
     "jsonwebtoken": "^9.0.2",
-    "ws": "^8.12.0",
+    "typescript": "^5.6.3",
     "zod": "^3.23.8"
-  },
-  "description": ""
+  }
 }

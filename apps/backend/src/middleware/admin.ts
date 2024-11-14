@@ -1,7 +1,7 @@
 import { NextFunction } from "express";
 import { Request, Response } from "express";    
-import { JWT_SECRET } from "../types/config";
 import jwt from "jsonwebtoken";
+import { JWT_PASSWORD } from "../config";
 
 
 export const adminMiddleware = (req: Request, res: Response, next: NextFunction) => { 
@@ -18,7 +18,7 @@ export const adminMiddleware = (req: Request, res: Response, next: NextFunction)
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET)as {role: string, userId:string};
+    const decoded = jwt.verify(token, JWT_PASSWORD)as {role: string, userId:string};
     if(decoded.role !== "Admin") {
       res.status(403).json({
         message: "Unauthorized"
