@@ -23,6 +23,7 @@
     "packages/*"
   ],
   "dependencies": {
-    "@repo/db": "^1.0.0"
+    "@repo/db": "^1.0.0",
+    "install": "^0.13.0"
   }
 }

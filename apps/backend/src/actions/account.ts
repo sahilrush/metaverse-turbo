@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken'; 
 import client from "@repo/db/client";
 import { SigninSchema, SignupSchema } from '../types';
-import { JWT_SECRET } from '../config';
+import { JWT_SECRET } from '../types/config';
 
 export const signup = async (req: Request, res: Response): Promise<any> => {
     console.log("Request body:", req.body); 
