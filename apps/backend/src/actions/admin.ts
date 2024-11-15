@@ -5,67 +5,55 @@ import { Request, Response } from "express"
 
 export const createElement = async(req: Request, res: Response) => {
     const parsedData = CreateElementSchema.safeParse(req.body)
-
-    if(!parsedData.success){
+    if (!parsedData.success) {
         res.status(400).json({message: "Validation failed"})
         return
-    } 
-
+    }
 
     const element = await client.element.create({
-        data:{
-            imageUrl: parsedData.data.imageUrl,
+        data: {
             width: parsedData.data.width,
             height: parsedData.data.height,
             static: parsedData.data.static,
+            imageUrl: parsedData.data.imageUrl,
         }
-        
     })
 
-        
     res.json({
-        id: element.id,
-        message: "Element created successfully",
+        id: element.id
     })
-
 }
-
 
 export const updateElement = async(req: Request, res: Response) => {
     const parsedData = UpdateElementSchema.safeParse(req.body)
-
-    if(!parsedData.success){
+    if (!parsedData.success) {
         res.status(400).json({message: "Validation failed"})
         return
     }
-
-    const element = await client.element.update({
+    client.element.update({
         where: {
             id: req.params.elementId
-        }, 
+        },
         data: {
-            imageUrl: parsedData.data.imageUrl,
-        }   
+            imageUrl: parsedData.data.imageUrl
+        }
     })
-}   
+    res.json({message: "Element updated"})
+}
 
 export const createAvatar = async(req: Request, res: Response) => {
     const parsedData = CreateAvatarSchema.safeParse(req.body)
-    if(!parsedData.success){
-       res.status(400).json({message:"validation failed"})
+    if (!parsedData.success) {
+        res.status(400).json({message: "Validation failed"})
         return
     }
-
     const avatar = await client.avatar.create({
-        data:{
-            name:parsedData.data.name,
-            imageUrl:parsedData.data.imageUrl,
+        data: {
+            name: parsedData.data.name,
+            imageUrl: parsedData.data.imageUrl
         }
     })
-    res.status(200).json({
-        id:avatar.id,
-        message:"Avatar created"
-    })
+    res.json({avatarId: avatar.id})
 }
 
 export const createMap = async(req:Request, res:Response) =>{

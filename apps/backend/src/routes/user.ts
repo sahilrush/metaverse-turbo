@@ -1,13 +1,13 @@
-import express from 'express'
+import express, { Router } from 'express'
 import { userMiddleware } from '../middleware/user'
 import { getbulkMetaData, UpdateMetadata } from '../actions/user'
-import { createAvatar, createElement, createMap, updateElement } from '../actions/admin'
-import { adminMiddleware } from '../middleware/admin'
-const userRouter = express.Router()
+import { updateElement } from '../actions/admin'
+export const userRouter = Router()
 
 userRouter.post("/metadata",userMiddleware,UpdateMetadata)
 userRouter.get("/metadata/bulk",getbulkMetaData)
-// router.post("/elements", adminMiddleware, createElement)
-// router.put("/element/:elementId", adminMiddleware, updateElement)
+userRouter.put("/element/:elementId",userMiddleware,updateElement)
 
-export default userRouter;
+
+
+

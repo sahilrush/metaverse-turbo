@@ -1,9 +1,11 @@
-import express from "express"
-import { adminMiddleware } from "../middleware/admin"
-import { createAvatar, createElement, createMap, updateElement } from "../actions/admin"
+import { Router } from "express";
+import { adminMiddleware } from "../middleware/admin";
+import { createAvatar, createElement, createMap } from "../actions/admin";
 
+const adminRouter = Router();
 
-const adminRouter = express.Router()
+adminRouter.post("/avatar", adminMiddleware, createAvatar);
+adminRouter.post("/map", adminMiddleware, createMap);
+adminRouter.post("/element",adminMiddleware,createElement)
 
-adminRouter.post("/avatar",adminMiddleware,createAvatar)
-adminRouter.post("/map",adminMiddleware,createMap)
+export default adminRouter;
