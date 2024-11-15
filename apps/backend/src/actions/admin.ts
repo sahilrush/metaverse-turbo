@@ -62,7 +62,7 @@ export const createAvatar = async(req: Request, res: Response) => {
             imageUrl:parsedData.data.imageUrl,
         }
     })
-    res.json({
+    res.status(200).json({
         id:avatar.id,
         message:"Avatar created"
     })

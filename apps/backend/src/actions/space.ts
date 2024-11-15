@@ -156,67 +156,58 @@ export const addElementtoSpace = async(req: Request, res: Response) => {
 
 
 export const getSpaceElementsbyId = async (req: Request, res: Response) => {
+    console.log("req.params.spaceId", req.params.spaceId)
     const space = await client.space.findUnique({
         where: {
             id: req.params.spaceId
-        },
-        include: {
-            elements: {
-                include: {
-                    element: true
-                }
-            },
+        }, select: {
+            creatorId: true
         }
     })
-
     if (!space) {
         res.status(400).json({message: "Space not found"})
         return
     }
 
-    res.json({
-        "dimensions": `${space.width}x${space.height}`,
-        elements: space.elements.map((e:any) => ({
-            id: e.id,
-            element: {
-                id: e.element.id,
-                imageUrl: e.element.imageUrl,
-                width: e.element.width,
-                height: e.element.height,
-                static: e.element.static
-            },
-            x: e.x,
-            y: e.y
-        })),
-    })
+    if (space.creatorId !== req.userId) {
+        console.log("code should reach here")
+        res.status(403).json({message: "Unauthorized"})
+        return
     }
 
+    await client.space.delete({
+        where: {
+            id: req.params.spaceId
+        }
+    })
+    res.status(200).json({message: "Space deleted"})
+}
+
     export const deleteElement = async(req: Request, res: Response) => {   
+        console.log("spaceElement?.space1 ")
         const parsedData = DeleteElementSchema.safeParse(req.body)
-        if(!parsedData.success){
+        if (!parsedData.success) {
             res.status(400).json({message: "Validation failed"})
             return
         }
-    
         const spaceElement = await client.spaceElements.findFirst({
-        where: {
-            id: parsedData.data.id
-        },
-        include:{
-            space: true,
-        }
+            where: {
+                id: parsedData.data.id
+            }, 
+            include: {
+                space: true
+            }
         })
-    
-        if(!spaceElement?.space.creatorId || spaceElement?.space.creatorId !== req.userId){
-            res.status(401).json({message: "Unauthorized"})
+        console.log(spaceElement?.space)
+        console.log("spaceElement?.space")
+        if (!spaceElement?.space.creatorId || spaceElement.space.creatorId !== req.userId) {
+            res.status(403).json({message: "Unauthorized"})
             return
         }
-       
         await client.spaceElements.delete({
             where: {
                 id: parsedData.data.id
             }
         })
-        res.status(200).json({message: "Element deleted successfully"})
-    }
-    
+        res.status(200).json({message: "Element deleted"})
+    }    

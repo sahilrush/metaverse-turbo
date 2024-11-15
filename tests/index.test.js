@@ -45,14 +45,14 @@ describe("Authentication", () => {
         const response = await axios.post(`${BACKEND_URL}/api/v1/signup`, {
             username,
             password,
-            type: "admin"
+            role: "admin"
         })
 
         expect(response.status).toBe(200)
         const updatedResponse = await axios.post(`${BACKEND_URL}/api/v1/signup`, {
             username,
             password,
-            type: "admin"
+            role: "admin"
         })
 
         expect(updatedResponse.status).toBe(400);
@@ -76,7 +76,7 @@ describe("Authentication", () => {
         await axios.post(`${BACKEND_URL}/api/v1/signup`, {
             username,
             password,
-            type: "admin"
+            role: "admin"
         });
 
         const response = await axios.post(`${BACKEND_URL}/api/v1/signin`, {
@@ -119,7 +119,7 @@ describe("User metadata endpoint", () => {
        await axios.post(`${BACKEND_URL}/api/v1/signup`, {
         username,
         password,
-        type: "admin"
+        role: "admin"
        });
 
        const response = await axios.post(`${BACKEND_URL}/api/v1/signin`, {
@@ -192,7 +192,7 @@ describe("User avatar information", () => {
         const signupResponse = await axios.post(`${BACKEND_URL}/api/v1/signup`, {
          username,
          password,
-         type: "admin"
+         role: "admin"
         });
 
         userId = signupResponse.data.userId
@@ -252,7 +252,7 @@ describe("Space information", () => {
         const signupResponse = await axios.post(`${BACKEND_URL}/api/v1/signup`, {
          username,
          password,
-         type: "admin"
+         role: "admin"
         });
 
         adminId = signupResponse.data.userId
@@ -267,7 +267,7 @@ describe("Space information", () => {
         const userSignupResponse = await axios.post(`${BACKEND_URL}/api/v1/signup`, {
             username: username + "-user",
             password,
-            type: "user"
+            role: "user"
         });
    
         userId = userSignupResponse.data.userId
@@ -471,7 +471,7 @@ describe("Arena endpoints", () => {
         const signupResponse = await axios.post(`${BACKEND_URL}/api/v1/signup`, {
          username,
          password,
-         type: "admin"
+         role: "admin"
         });
 
         adminId = signupResponse.data.userId
@@ -486,7 +486,7 @@ describe("Arena endpoints", () => {
         const userSignupResponse = await axios.post(`${BACKEND_URL}/api/v1/signup`, {
             username: username + "-user",
             password,
-            type: "user"
+            role: "user"
         });
    
         userId = userSignupResponse.data.userId
@@ -654,7 +654,7 @@ describe("Admin Endpoints", () => {
         const signupResponse = await axios.post(`${BACKEND_URL}/api/v1/signup`, {
          username,
          password,
-         type: "admin"
+         role: "admin"
         });
 
         adminId = signupResponse.data.userId
@@ -669,7 +669,7 @@ describe("Admin Endpoints", () => {
         const userSignupResponse = await axios.post(`${BACKEND_URL}/api/v1/signup`, {
             username: username + "-user",
             password,
-            type: "user"
+            role: "user"
         });
    
         userId = userSignupResponse.data.userId
@@ -829,7 +829,7 @@ describe("Websocket tests", () => {
         const adminSignupResponse = await axios.post(`${BACKEND_URL}/api/v1/signup`, {
             username,
             password,
-            type: "admin"
+            role: "admin"
         })
 
         const adminSigninResponse = await axios.post(`${BACKEND_URL}/api/v1/signin`, {
@@ -845,7 +845,7 @@ describe("Websocket tests", () => {
         const userSignupResponse = await axios.post(`${BACKEND_URL}/api/v1/signup`, {
             username: username + `-user`,
             password,
-            type: "user"
+            role: "user"
         })
         const userSigninResponse = await axios.post(`${BACKEND_URL}/api/v1/signin`, {
             username: username + `-user`,
@@ -947,7 +947,7 @@ describe("Websocket tests", () => {
     test("Get back ack for joining the space", async () => {
         console.log("insixce first test")
         ws1.send(JSON.stringify({
-            "type": "join",
+            "role": "join",
             "payload": {
                 "spaceId": spaceId,
                 "token": adminToken
@@ -957,7 +957,7 @@ describe("Websocket tests", () => {
         const message1 = await waitForAndPopLatestMessage(ws1Messages);
         console.log("insixce first test2")
         ws2.send(JSON.stringify({
-            "type": "join",
+            "role": "join",
             "payload": {
                 "spaceId": spaceId,
                 "token": userToken
@@ -968,11 +968,11 @@ describe("Websocket tests", () => {
         const message2 = await waitForAndPopLatestMessage(ws2Messages);
         const message3 = await waitForAndPopLatestMessage(ws1Messages);
 
-        expect(message1.type).toBe("space-joined")
-        expect(message2.type).toBe("space-joined")
+        expect(message1.role).toBe("space-joined")
+        expect(message2.role).toBe("space-joined")
         expect(message1.payload.users.length).toBe(0)
         expect(message2.payload.users.length).toBe(1)
-        expect(message3.type).toBe("user-joined");
+        expect(message3.role).toBe("user-joined");
         expect(message3.payload.x).toBe(message2.payload.spawn.x);
         expect(message3.payload.y).toBe(message2.payload.spawn.y);
         expect(message3.payload.userId).toBe(userId);
@@ -986,7 +986,7 @@ describe("Websocket tests", () => {
 
     test("User should not be able to move across the boundary of the wall", async () => {
         ws1.send(JSON.stringify({
-            type: "move",
+            role: "move",
             payload: {
                 x: 1000000,
                 y: 10000
@@ -994,14 +994,14 @@ describe("Websocket tests", () => {
         }));
 
         const message = await waitForAndPopLatestMessage(ws1Messages);
-        expect(message.type).toBe("movement-rejected")
+        expect(message.role).toBe("movement-rejected")
         expect(message.payload.x).toBe(adminX)
         expect(message.payload.y).toBe(adminY)
     })
 
     test("User should not be able to move two blocks at the same time", async () => {
         ws1.send(JSON.stringify({
-            type: "move",
+            role: "move",
             payload: {
                 x: adminX + 2,
                 y: adminY
@@ -1009,14 +1009,14 @@ describe("Websocket tests", () => {
         }));
 
         const message = await waitForAndPopLatestMessage(ws1Messages);
-        expect(message.type).toBe("movement-rejected")
+        expect(message.role).toBe("movement-rejected")
         expect(message.payload.x).toBe(adminX)
         expect(message.payload.y).toBe(adminY)
     })
 
     test("Correct movement should be broadcasted to the other sockets in the room",async () => {
         ws1.send(JSON.stringify({
-            type: "move",
+            role: "move",
             payload: {
                 x: adminX + 1,
                 y: adminY,
@@ -1025,7 +1025,7 @@ describe("Websocket tests", () => {
         }));
 
         const message = await waitForAndPopLatestMessage(ws2Messages);
-        expect(message.type).toBe("movement")
+        expect(message.role).toBe("movement")
         expect(message.payload.x).toBe(adminX + 1)
         expect(message.payload.y).toBe(adminY)
     })
@@ -1033,7 +1033,7 @@ describe("Websocket tests", () => {
     test("If a user leaves, the other user receives a leave event", async () => {
         ws1.close()
         const message = await waitForAndPopLatestMessage(ws2Messages);
-        expect(message.type).toBe("user-left")
+        expect(message.role).toBe("user-left")
         expect(message.payload.userId).toBe(adminUserId)
     })
 })

@@ -1,5 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 
+interface User {
+  x:number,
+  y:number;
+}
+
+
 const Arena = () => {
   const canvasRef = useRef<any>(null);
   const wsRef = useRef<any>(null);
@@ -29,10 +35,10 @@ const Arena = () => {
     };
 
     wsRef.current.onmessage = (event: any) => {
+      // Correct: JSON stringified message
       const message = JSON.parse(event.data);
       handleWebSocketMessage(message);
     };
-
     return () => {
       if (wsRef.current) {
         wsRef.current.close();
@@ -78,7 +84,7 @@ const Arena = () => {
         break;
 
       case 'movement':
-        setUsers((prev:any) => {
+        setUsers((prev:Map<string, User>) => {
           const newUsers = new Map(prev);
           const user = newUsers.get(message.payload.userId);
           if (user) {
@@ -165,8 +171,7 @@ const Arena = () => {
       ctx.fillText('You', currentUser.x * 50, currentUser.y * 50 + 40);
     }
 
-    // Draw other users
-    users.forEach((user:any) => {
+      users.forEach((user:any) => {
     if (!user.x) {
         return
     }

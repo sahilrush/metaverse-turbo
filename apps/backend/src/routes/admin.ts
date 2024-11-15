@@ -3,9 +3,7 @@ import { adminMiddleware } from "../middleware/admin"
 import { createAvatar, createElement, createMap, updateElement } from "../actions/admin"
 
 
-const router = express.Router()
+const adminRouter = express.Router()
 
-router.post("/elements", adminMiddleware, createElement)
-router.put("/element/:elementId", adminMiddleware, updateElement)
-router.post("/avatar", adminMiddleware, createAvatar)
-router.post("/map", adminMiddleware, createMap)
+adminRouter.post("/avatar",adminMiddleware,createAvatar)
+adminRouter.post("/map",adminMiddleware,createMap)
