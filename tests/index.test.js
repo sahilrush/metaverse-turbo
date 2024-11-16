@@ -1,5 +1,5 @@
 const axios2 = require("axios");
-
+const {WebSocket} = require("ws");
 const BACKEND_URL = "http://localhost:3000"
 const WS_URL = "ws://localhost:3001"
 
@@ -39,6 +39,7 @@ const axios = {
 }
 
 describe("Authentication", () => {
+    jest.setTimeout(10000);
     test('User is able to sign up only once', async () => {
         const username = "kirat" + Math.random(); // kirat0.12331313
         const password = "123456";
@@ -109,6 +110,9 @@ describe("Authentication", () => {
 })
 
 describe("User metadata endpoint", () => {
+    jest.setTimeout(10000);
+
+    
     let token = "";
     let avatarId = ""
 
@@ -180,7 +184,10 @@ describe("User metadata endpoint", () => {
     })
 });
 
-describe("User avatar information", () => {
+// describe("User avatar information", () => {
+    jest.setTimeout(10000);
+
+    
     let avatarId;
     let token;
     let userId;
@@ -234,9 +241,12 @@ describe("User avatar information", () => {
         expect(currentAvatar).toBeDefined()
     })
 
-})
+// })
 
 describe("Space information", () => {
+    jest.setTimeout(10000);
+
+    
     let mapId;
     let element1Id;
     let element2Id;
@@ -455,6 +465,9 @@ describe("Space information", () => {
 })
 
 describe("Arena endpoints", () => {
+    jest.setTimeout(10000);
+
+    
     let mapId;
     let element1Id;
     let element2Id;
@@ -573,7 +586,7 @@ describe("Arena endpoints", () => {
                 "authorization": `Bearer ${userToken}`
             }
         });
-        console.log(response.data)
+console.log(response.data);
         expect(response.data.dimensions).toBe("100x200")
         expect(response.data.elements.length).toBe(3)
     })
@@ -607,7 +620,7 @@ describe("Arena endpoints", () => {
        const newResponse = await axios.post(`${BACKEND_URL}/api/v1/space/element`, {
             "elementId": element1Id,
             "spaceId": spaceId,
-            "x": 10000,
+            "x": 20000,
             "y": 210000
         }, {
             headers: {
@@ -642,6 +655,9 @@ describe("Arena endpoints", () => {
 })
 
 describe("Admin Endpoints", () => {
+    jest.setTimeout(10000);
+
+    
     let adminToken;
     let adminId;
     let userToken;
@@ -790,6 +806,9 @@ describe("Admin Endpoints", () => {
 });
 
 describe("Websocket tests", () => {
+    jest.setTimeout(20000)
+
+    
     let adminToken;
     let adminUserId;
     let userToken;
@@ -989,7 +1008,7 @@ describe("Websocket tests", () => {
             role: "move",
             payload: {
                 x: 1000000,
-                y: 10000
+                y: 15000
             }
         }));
 

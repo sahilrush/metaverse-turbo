@@ -6,7 +6,6 @@ export const userRouter = Router()
 
 userRouter.post("/metadata",userMiddleware,UpdateMetadata)
 userRouter.get("/metadata/bulk",getbulkMetaData)
-userRouter.put("/element/:elementId",userMiddleware,updateElement)
 
 
 

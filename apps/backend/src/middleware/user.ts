@@ -18,10 +18,13 @@ export const userMiddleware = (req: Request, res: Response, next: NextFunction) 
   }
 
   try {
+    console.log("token not giving error i")
     const decoded = jwt.verify(token, JWT_PASSWORD)as {role: string, userId:string};
+    console.log("token verified ans i d",decoded)
     req.userId = decoded.userId;
     next();
   } catch(e) {
+    console.log("error is there ",e)
     res.status(403).json({
       message: "Unauthorized"
     })  

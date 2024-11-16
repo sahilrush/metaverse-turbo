@@ -32,59 +32,70 @@ export const deleteElement = async(req: Request, res: Response) => {
     })
     res.status(200).json({message: "Element deleted"})
 }    
-// ????????????????????????????????????????????????????????/
 
 
 export const getSpaceElementsbyId = async (req: Request, res: Response) => {
-    console.log("req.params.spaceId", req.params.spaceId)
     const space = await client.space.findUnique({
         where: {
             id: req.params.spaceId
-        }, select: {
-            creatorId: true
+        },
+        include: {
+            elements: {
+                include: {
+                    element: true
+                }
+            },
         }
     })
+
     if (!space) {
         res.status(400).json({message: "Space not found"})
         return
     }
 
-    if (space.creatorId !== req.userId) {
-        console.log("code should reach here")
-        res.status(403).json({message: "Unauthorized"})
-        return
-    }
-
-    await client.space.delete({
-        where: {
-            id: req.params.spaceId
-        }
+    res.json({
+        "dimensions": `${space.width}x${space.height}`,
+        elements: space.elements.map(e => ({
+            id: e.id,
+            element: {
+                id: e.element.id,
+                imageUrl: e.element.imageUrl,
+                width: e.element.width,
+                height: e.element.height,
+                static: e.element.static
+            },
+            x: e.x,
+            y: e.y
+        })),
     })
-    res.status(200).json({message: "Space deleted"})
 }
 
 
-// ???????????????????????????????????//////////
 export const addElementtoSpace = async(req: Request, res: Response) => {
     const parsedData = AddElementSchema.safeParse(req.body)
-    if(!parsedData.success){
+    if (!parsedData.success) {
         res.status(400).json({message: "Validation failed"})
         return
     }
-    const space = await client.space.findFirst({
-        where:{
+    const space = await client.space.findUnique({
+        where: {
             id: req.body.spaceId,
-            creatorId: req.userId
-        }, select:{
+            creatorId: req.userId!
+        }, select: {
             width: true,
-            height: true,
+            height: true
         }
     })
-    if(!space){
-        res.status(400).json({message: "Space not found"})
+
+    if(req.body.x < 0 || req.body.y < 0 || req.body.x > space?.width! || req.body.y > space?.height!) {
+        res.status(400).json({message: "Point is outside of the boundary"})
         return
     }
 
+    if (!space) {
+        res.status(400).json({message: "Space not found"})
+        return
+    }
     await client.spaceElements.create({
         data: {
             spaceId: req.body.spaceId,
@@ -93,13 +104,9 @@ export const addElementtoSpace = async(req: Request, res: Response) => {
             y: req.body.y
         }
     })
-   
-    res.json({message: "Element added successfully"})
 
-
+    res.json({message: "Element added"})
 }
-// ??????????????????????????????????????????/////
-
 export const getAllSpaces = async(req: Request, res: Response) => {
     const spaces = await client.space.findMany({
         where: {
@@ -181,34 +188,32 @@ export const createSpace = async(req: Request, res: Response) => {
 
     })
     console.log("space crated")
-    res.json({spaceId: space.id})
+    res.status(200).json({spaceId: space.id})
 }
 
-// ??????????????????????????????????????????????????//
-// export  const deleteSpace = async(req: Request, res: Response) => {
-//     const space = await client.space.findFirst({
-//         where:{
-//             id: req.params.spaceId
-//         }, select:{
-//             creatorId: true 
-//         }
+export  const deleteSpace = async(req: Request, res: Response) => {
+    const space = await client.space.findFirst({
+        where:{
+            id: req.params.spaceId
+        }, select:{
+            creatorId: true 
+        }
+    })
+    if(!space){
+        res.status(400).json({message: "Space not found"})
+        return
+    }
+    if(space.creatorId !== req.userId){
+        res.status(403).json({message: "Not authorized"})
+        return
+    }
+    await client.space.delete({
+        where: {
+            id: req.params.spaceId
+        }
+    })
+    res.status(200).json({message: "Space deleted successfully"})
 
-//     })
-//     if(!space){
-//         res.status(400).json({message: "Space not found"})
-//         return
-//     }
-//     if(space.creatorId !== req.userId){
-//         res.status(403).json({message: "Not authorized"})
-//         return
-//     }
-//     await client.space.delete({
-//         where: {
-//             id: req.params.spaceId
-//         }
-//     })
-//     res.json({message: "Space deleted successfully"})
-
-// }
+}
 
 
