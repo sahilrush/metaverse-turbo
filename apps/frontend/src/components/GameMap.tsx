@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-
-const MOVEMENT_SPEED = 5;
+//can add movement speed
 const TILE_SIZE = 50;
 const PROXIMITY_THRESHOLD = 100;
 
@@ -46,20 +45,20 @@ const Arena = () => {
     };
   }, []);
 
-  const handleWebSocketMessage = (message: any) => {
+  const handleWebSocketMessage = (message: any) =>{
     switch (message.type) {
       case 'space-joined':
         const newUser = {
           x: message.payload.spawn.x,
           y: message.payload.spawn.y,
           userId: message.payload.userId,
-          emoji: '🧑‍💼'
+          emoji: '❤️'
         };
         setCurrentUser(newUser);
         
         const userMap = new Map();
         message.payload.users.forEach((user: User) => {
-          userMap.set(user.userId, { ...user, emoji: '👥' });
+          userMap.set(user.userId, { ...user, emoji: '💔' });
         });
         setUsers(userMap);
         break;
@@ -71,7 +70,7 @@ const Arena = () => {
             x: message.payload.x,
             y: message.payload.y,
             userId: message.payload.userId,
-            emoji: '👥'
+            emoji: '💔'
           });
           return newUsers;
         });
