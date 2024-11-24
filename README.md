@@ -1,4 +1,5 @@
 # Turborepo starter
+![Screenshot from 2024-11-24 07-17-59](https://github.com/user-attachments/assets/7a2cd20a-0982-4459-b03d-629b49a022e0)
 
 This is an official starter Turborepo.
 
