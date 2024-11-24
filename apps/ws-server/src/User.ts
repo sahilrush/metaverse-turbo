@@ -38,7 +38,7 @@ export class User {
             console.log("parsedData")
             switch (parsedData.type) {
                 case "join":
-                    console.log("jouin receiverdfd")
+                    console.log("join receiverdfd")
                     const spaceId = parsedData.payload.spaceId;
                     const token = parsedData.payload.token;
                     const decodedToken = (jwt.verify(token, JWT_PASSWORD) as JwtPayload);
@@ -51,19 +51,19 @@ export class User {
                         this.ws.close()
                         return
                     }
-                    console.log("jouin receiverdfd 2")
+                    console.log("join receiverdfd 2")
                     this.userId = userId
                     const space = await client.space.findFirst({
                         where: {
                             id: spaceId
                         }
                     })
-                    console.log("jouin receiverdfd 3")
+                    console.log("join receiverdfd 3")
                     if (!space) {
                         this.ws.close()
                         return;
                     }
-                    console.log("jouin receiverdfd 4")
+                    console.log("join receiverdfd 4")
                     this.spaceId = spaceId
                     RoomManager.getInstance().addUser(spaceId, this);
                     this.x = Math.floor(Math.random() * space?.width);
@@ -78,7 +78,7 @@ export class User {
                             users: RoomManager.getInstance().rooms.get(spaceId)?.filter(x => x.id !== this.id)?.map((u) => ({id: u.id})) ?? []
                         }
                     });
-                    console.log("jouin receiverdf5")
+                    console.log("join receiverdf5")
                     RoomManager.getInstance().broadcast({
                         type: "user-joined",
                         payload: {
